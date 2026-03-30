@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dashboard - Examination System</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root{
+  --primary:#2563eb;
+  --success:#16a34a;
+  --secondary:#64748b;
+  --danger:#dc2626;
+  --dark-bg:#0f172a;
+  --light-bg:#f1f5f9;
+}
+
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:var(--dark-bg);
+  color:white;
+  transition:0.4s ease;
+}
+
+body.light{
+  background:var(--light-bg);
+  color:#111;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 40px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(10px);
+}
+
+.logo-area{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.logo-area img{
+  width:50px;
+  height:50px;
+  object-fit:contain;
+}
+
+.school-title{
+  font-weight:600;
+  font-size:18px;
+}
+
+.toggle{
+  cursor:pointer;
+  font-size:20px;
+}
+
+.main{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:85vh;
+}
+
+.card-panel{
+  width:500px;
+  padding:40px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(15px);
+  box-shadow:0 15px 40px rgba(0,0,0,0.4);
+  text-align:center;
+  animation:fadeIn 0.8s ease;
+}
+
+body.light .card-panel{
+  background:white;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.welcome{
+  font-size:20px;
+  font-weight:500;
+  margin-bottom:30px;
+}
+
+.btn-custom{
+  width:100%;
+  padding:15px;
+  font-weight:600;
+  margin-bottom:20px;
+  border:none;
+  border-radius:12px;
+  transition:0.3s;
+  font-size:15px;
+}
+
+.btn-final{
+  background:var(--primary);
+  color:white;
+}
+
+.btn-final:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(37,99,235,0.4);
+}
+
+.btn-terminal{
+  background:var(--secondary);
+  color:white;
+}
+
+.btn-terminal:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(100,116,139,0.4);
+}
+
+.logout{
+  background:var(--danger);
+  color:white;
+  font-size:14px;
+}
+
+.logout:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(220,38,38,0.4);
+}
+
+.footer{
+  position:absolute;
+  bottom:10px;
+  width:100%;
+  text-align:center;
+  font-size:13px;
+  opacity:0.6;
+}
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo-area">
+    <img src="school_logo.png" alt="School Logo">
+    <div class="school-title">Trishaheed Secondary School</div>
+  </div>
+
+  <div class="toggle" onclick="toggleMode()" id="modeIcon">
+    <i class="fa fa-moon"></i>
+  </div>
+</div>
+
+<div class="main">
+  <div class="card-panel">
+
+    <div class="welcome" id="welcomeText"></div>
+
+    <button onclick="openFinal()" class="btn btn-custom btn-final">
+      <i class="fa fa-file-lines"></i> Final Term Examination Gradesheet with Ledger
+    </button>
+
+    <button onclick="openTerminal()" class="btn btn-custom btn-terminal">
+      <i class="fa fa-clipboard-list"></i> Terminal Examination Gradesheet
+    </button>
+
+    <button onclick="logout()" class="btn btn-custom logout">
+      <i class="fa fa-right-from-bracket"></i> Logout
+    </button>
+
+  </div>
+</div>
+
+<div class="footer">
+  © 2026 (Ashish Paudel) Trishaheed Secondary School | Examination Management System
+</div>
+
+<script>
+
+// LOGIN PROTECTION
+if(localStorage.getItem("loggedIn")!=="true"){
+  window.location.href="login.html";
+}
+
+// Welcome
+const username = localStorage.getItem("username") || "User";
+document.getElementById("welcomeText").innerText =
+"Welcome back, " + username + " 👋";
+
+// Final Access
+function openFinal(){
+  localStorage.setItem("finalAccess","true");
+  window.location.href="data_entry.html";
+}
+function openTerminal(){
+  localStorage.setItem("finalAccess","true");
+  window.location.href="terminal/index.html";
+}
+
+// Logout
+function logout(){
+  localStorage.clear();
+  window.location.href="index.html";
+}
+
+// Toggle Theme
+function toggleMode(){
+  document.body.classList.toggle("light");
+
+  if(document.body.classList.contains("light")){
+    document.getElementById("modeIcon").innerHTML='<i class="fa fa-sun"></i>';
+    localStorage.setItem("theme","light");
+  }else{
+    document.getElementById("modeIcon").innerHTML='<i class="fa fa-moon"></i>';
+    localStorage.setItem("theme","dark");
+  }
+}
+
+// Load Saved Theme
+if(localStorage.getItem("theme")==="light"){
+  document.body.classList.add("light");
+  document.getElementById("modeIcon").innerHTML='<i class="fa fa-sun"></i>';
+}
+
+</script>
+
+</body>
+</html>

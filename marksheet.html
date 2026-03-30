@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Professional Marksheet</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<!-- Premium Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+  margin:0;
+  padding:0;
+  background:#eef2f7;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* MAIN CONTAINER */
+.marksheet-container{
+  width:204mm;
+  height:296mm;
+  margin:auto;
+  background:#ffffff;
+  border:8px double #0b3d91;
+  padding:18px;
+  box-sizing:border-box;
+  position:relative;
+  overflow:hidden;
+}
+
+/* WATERMARK */
+.watermark{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:420px;
+  opacity:0.05;
+  transform:translate(-50%,-50%);
+}
+
+.watermark-text{
+  position:absolute;
+  top:52%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:16px;
+  letter-spacing:2px;
+  opacity:0.2;
+  font-weight:600;
+}
+
+/* HEADER */
+.header-flex{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  border-bottom:4px solid #0b3d91;
+  padding-bottom:15px;
+}
+
+.header-flex img{
+  width:90px;
+}
+
+.header-title{
+  font-family:'Playfair Display', serif;
+  font-size:30px;
+  font-weight:700;
+  color:#0b3d91;
+  text-align:center;
+}
+
+.header-subtitle{
+  font-size:15px;
+  font-weight:600;
+  letter-spacing:1px;
+  text-align:center;
+}
+
+/* STUDENT INFO */
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  margin-top:15px;
+  font-weight:600;
+  font-size:14px;
+  padding:8px 0;
+}
+
+/* TABLE DESIGN */
+.result-table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+font-size:12px;
+border:3px solid #0b3d91;
+text-align:center;
+}
+
+.result-table th{
+background:linear-gradient(135deg,#0b3d91,#163fa0);
+color:white;
+padding:8px;
+border:1.5px solid #000;
+font-weight:600;
+font-size:12px;
+white-space:nowrap;
+}
+
+.result-table td{
+padding:6px;
+border:1.5px solid #000;
+text-align:center;
+font-weight:600;
+font-size:12px;
+}
+
+.result-table tbody tr:nth-child(even){
+  background:#f4f7fc;
+}
+
+/* GPA BOX */
+.gpa-block{
+  border:3px solid #0b3d91;
+  padding:12px;
+  width:220px;
+  margin-left:auto;
+  margin-top:15px;
+  font-weight:700;
+  font-size:16px;
+  text-align:center;
+  background:linear-gradient(135deg,#e3f2fd,#cfe3ff);
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* GRADING SYSTEM */
+.footer-grade{
+  margin-top:15px;
+  border:3px solid #0b3d91;
+  padding:10px;
+}
+
+.footer-grade h6{
+  font-family:'Playfair Display', serif;
+  font-weight:700;
+  margin-bottom:10px;
+  color:#0b3d91;
+}
+
+.footer-grade table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+
+.footer-grade td{
+  border:1.5px solid #000;
+  padding:6px;
+  text-align:center;
+  font-weight:500;
+}
+
+/* SIGNATURE SECTION */
+.sign-section{
+display:flex;
+justify-content:space-between;
+align-items:flex-end;
+margin-top:10px;
+padding:0 40px;
+position:absolute;
+bottom:20px;
+width:100%;
+left:0;
+}
+
+.signature-box{
+  width:30%;
+  text-align:center;
+}
+
+.sign-img{
+  height:80px;
+  display:block;
+  margin:0 auto 5px auto;
+}
+
+.sign-space{
+  height:80px; /* same as image height */
+}
+
+.sign-line{
+  border-top:2px solid #000;
+  margin-top:-20px;
+}
+
+.sign-title{
+  margin-top:6px;
+  font-weight:600;
+  font-size:14px;
+  letter-spacing:0.5px;
+}
+
+/* BUTTON */
+#pdfBtn{
+  position: fixed;
+  bottom: 30px;
+  right: 35px;
+  width: 220px;
+  font-weight: 600;
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  z-index: 9999;
+}
+.result-table td:nth-child(2){
+text-align:left;
+white-space:normal;
+word-break:normal;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="marksheet" class="marksheet-container">
+
+<img src="school_logo.png" class="watermark">
+<h6 class="watermark-text">Prepared By Ashish Paudel</h6>
+
+<div class="header-flex">
+  <img src="school_logo.png">
+  <div style="width:100%;">
+    <div class="header-title">Shree Tri-Shaheed Secondary School</div>
+    <div style="font-size:18px;text-align:center;">Aandikhola-1, Syangja</div>
+    <div class="header-subtitle">FINAL EXAMINATION GRADE-SHEET-2082</div>
+  </div>
+</div>
+
+<div class="info-row" id="studentInfo"></div>
+
+<table class="result-table">
+<thead>
+
+<tr>
+<th rowspan="2">SN</th>
+<th rowspan="2">SUBJECTS</th>
+<th colspan="2">CREDIT HOUR</th>
+<th colspan="4">OBTAINED GRADE</th>
+<th rowspan="2">FINAL GRADE</th>
+</tr>
+
+<tr>
+<th>TH</th>
+<th>PR</th>
+<th>TH GP</th>
+<th>TH Grade</th>
+<th>PR GP</th>
+<th>PR Grade</th>
+</tr>
+
+</thead>
+  <tbody id="resultBody"></tbody>
+</table>
+
+<div class="gpa-block" id="gpaBlock">Final GPA: 0.00</div>
+
+<div class="footer-grade">
+  <h6 class="text-center fw-bold">Grading System (Full Marks 100)</h6>
+  <table>
+    <tr><td>90 - 100</td><td>A+</td><td>OUTSTANDING</td><td>4.0</td></tr>
+    <tr><td>80 - 89</td><td>A</td><td>EXCELLENT</td><td>3.6</td></tr>
+    <tr><td>70 - 79</td><td>B+</td><td>VERY-GOOD</td><td>3.2</td></tr>
+    <tr><td>60 - 69</td><td>B</td><td>GOOD</td><td>2.8</td></tr>
+    <tr><td>50 - 59</td><td>C+</td><td>SATISFACTORY</td><td>2.4</td></tr>
+    <tr><td>40 - 49</td><td>C</td><td>ACCEPTABLE</td><td>2.0</td></tr>
+    <tr><td>32 - 39</td><td>D</td><td>BASIC</td><td>1.6</td></tr>
+    <tr><td>Below 32</td><td>NG</td><td>NOT-GRADED</td><td>0</td></tr>
+  </table>
+</div>
+
+<!-- SIGNATURE LINES -->
+
+<div class="sign-section">
+
+  <div class="signature-box">
+    <img src="ashish_signature1.png" class="sign-img">
+    <div class="sign-line"></div>
+    <div class="sign-title">Prepared By</div>
+  </div>
+
+  <div class="signature-box">
+    <div class="sign-space"></div>
+    <div class="sign-line"></div>
+    <div class="sign-title">Class Teacher</div>
+  </div>
+
+  <div class="signature-box">
+    <div class="sign-space"></div>
+    <div class="sign-line"></div>
+    <div class="sign-title">Head Teacher</div>
+  </div>
+
+</div>
+
+</div>
+<button id="pdfBtn" class="btn btn-success">
+📥 Download PDF
+</button>
+
+<button id="ledgerBtn" class="btn btn-primary" 
+style="position:fixed; bottom:80px; right:35px; width:220px; border-radius:10px;">
+📊 Generate Ledger
+</button>
+
+<script>
+// LOGIN CHECK
+if(localStorage.getItem("loggedIn") !== "true"){
+  window.location.href="login.html";
+}
+
+// FINAL TERM ACCESS CHECK
+if(localStorage.getItem("finalAccess") !== "true"){
+  window.location.href="dashboard.html";
+}
+/* AUTO CAPITALIZE */
+function capitalizeWords(text){
+  return text.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+}
+
+// PASS CHECK
+function isPass(marks, full){
+  return marks >= (full * 0.32);
+}
+
+// GRADE POINT
+function getPointFromMarks(marks, full){
+
+  if(full == 75){
+    if(marks>=67.5) return 4.0;
+    if(marks>=60) return 3.6;
+    if(marks>=52.5) return 3.2;
+    if(marks>=45) return 2.8;
+    if(marks>=37.5) return 2.4;
+    if(marks>=30) return 2.0;
+    if(marks>=26.25) return 1.6;
+    return 0;
+  }
+
+  if(full == 50){
+    if(marks>=45) return 4.0;
+    if(marks>=40) return 3.6;
+    if(marks>=35) return 3.2;
+    if(marks>=30) return 2.8;
+    if(marks>=25) return 2.4;
+    if(marks>=20) return 2.0;
+    if(marks>=18) return 1.6;
+    return 0;
+  }
+
+  if(full == 25){
+    if(marks>=22.5) return 4.0;
+    if(marks>=20) return 3.6;
+    if(marks>=17.5) return 3.2;
+    if(marks>=15) return 2.8;
+    if(marks>=12.5) return 2.4;
+    if(marks>=10) return 2.0;
+    if(marks>=8) return 1.6;
+    return 0;
+  }
+
+  return 0;
+}
+
+// LETTER FROM GPA
+function getLetterFromPoint(gpa){
+
+  if(gpa > 3.6 && gpa<=4) return "A+";
+  if(gpa > 3.2 && gpa<=3.6) return "A";
+  if(gpa > 2.8 && gpa<=3.2) return "B+";
+  if(gpa > 2.4 && gpa<=2.8) return "B";
+  if(gpa > 2.0 && gpa<=2.4) return "C+";
+  if(gpa > 1.6 && gpa<=2.0) return "C";
+  if(gpa > 0 && gpa<=1.6) return "D";
+
+  return "NG";
+}
+
+const data = JSON.parse(sessionStorage.getItem("marksheetData") || "{}");
+
+if(data.name){
+
+  document.getElementById("studentInfo").innerHTML = `
+    <div>Name: ${capitalizeWords(data.name)}</div>
+    <div>Class: ${capitalizeWords(data.classname)}</div>
+    <div>Roll: ${data.roll}</div>
+  `;
+
+  let totalWeightedPoints = 0;
+  let totalCredit = 0;
+  let overallFail = false;
+  let sn = 1;
+
+data.subjects.forEach(sub => {
+
+  let th = Number(sub.marksTheory);
+  let pr = Number(sub.marksPractical);
+  let fullTh = Number(sub.fullTheory);
+  let fullPr = Number(sub.fullPractical);
+
+  let creditTh = Number(sub.creditTheory);
+  let creditPr = Number(sub.creditPractical);
+
+  let totalSubjectCredit = creditTh + creditPr;
+
+  // THEORY & PRACTICAL GRADE POINT
+  let thPoint = getPointFromMarks(th, fullTh);
+  let prPoint = getPointFromMarks(pr, fullPr);
+
+  let thLetter = getLetterFromPoint(thPoint);
+  let prLetter = getLetterFromPoint(prPoint);
+
+  // PASS CHECK (NG rule)
+  let passTh = thLetter !== "NG";
+  let passPr = prLetter !== "NG";
+
+  if(!passTh || !passPr){
+    overallFail = true;
+  }
+
+  // SUBJECT GPA
+  let subjectGPA = 0;
+  let finalLetter = "NG";
+
+  if(passTh && passPr){
+
+    subjectGPA = (
+      (thPoint * creditTh) +
+      (prPoint * creditPr)
+    ) / (creditTh + creditPr);
+
+    subjectGPA = Number(subjectGPA.toFixed(2));
+    finalLetter = getLetterFromPoint(subjectGPA);
+
+  }else{
+    subjectGPA = 0;
+    finalLetter = "NG";
+  }
+
+  if(finalLetter === "NG"){
+    overallFail = true;
+  }
+
+  totalWeightedPoints += subjectGPA * totalSubjectCredit;
+  totalCredit += totalSubjectCredit;
+
+document.getElementById("resultBody").innerHTML += `
+<tr>
+<td>${sn++}</td>
+<td style="text-align:left;">${capitalizeWords(sub.name)}</td>
+<td>${creditTh}</td>
+<td>${creditPr}</td>
+<td>${thPoint === 0 ? "NG" : thPoint.toFixed(1)}</td>
+<td>${thLetter}</td>
+<td>${prPoint === 0 ? "NG" : prPoint.toFixed(1)}</td>
+<td>${prLetter}</td>
+<td>${finalLetter}</td>
+</tr>
+`;
+
+});
+
+  let finalGPA = "NG";
+
+  if(!overallFail && totalCredit > 0){
+    finalGPA = (totalWeightedPoints / totalCredit).toFixed(2);
+  }
+
+  document.getElementById("gpaBlock").innerHTML = "Final GPA: " + finalGPA;
+}
+
+/* PDF LOGIC SAME */
+document.getElementById("pdfBtn").addEventListener("click", function(){
+
+  const element = document.getElementById("marksheet");
+
+  const opt = {
+    margin: 0,
+    filename: (data.name ? data.name.replace(/\s+/g,"_") : "marksheet") + ".pdf",
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: { scale: 3, scrollY: 0, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
+
+      const totalPages = pdf.internal.getNumberOfPages();
+      if(totalPages > 1){
+          pdf.deletePage(totalPages);
+      }
+
+  }).save();
+
+});
+
+
+
+document.getElementById("ledgerBtn").addEventListener("click", function(){
+
+  const data = JSON.parse(sessionStorage.getItem("marksheetData") || "{}");
+
+  if(!data.classname){
+    alert("Class not found.");
+    return;
+  }
+
+  // IMPORTANT
+  sessionStorage.setItem("selectedClass", data.classname.trim());
+
+  window.open("ledger.html","_blank");
+});
+
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Class Ledger</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<style>
+body{
+  background:#eef2f7;
+  font-family:Poppins, sans-serif;
+}
+
+/* CONTAINER */
+.container-box{
+  width:99%;
+  max-width: 2300px;
+  margin:30px auto;
+  background:#fff;
+  padding:25px;
+  border:5px double #0b3d91;
+  position:relative;
+}
+
+/* HEADER */
+.header-flex{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  border-bottom:4px solid #0b3d91;
+  padding-bottom:10px;
+  text-align: center;
+}
+
+.header-flex img{
+  width:80px;
+}
+
+/* WATERMARK */
+.watermark{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:420px;
+  opacity:0.09;
+  transform:translate(-50%,-50%);
+}
+
+.watermark-text{
+  position:absolute;
+  top:52%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:18px;
+  letter-spacing:2px;
+  opacity:0.3;
+  font-weight:600;
+}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+  table-layout:fixed;
+}
+
+th, td{
+  border:2px solid #0b3d91;
+  padding:4px;
+  text-align:center;
+  font-size:10px;
+  word-break:break-word;
+}
+/*name ko lagi */
+th:nth-child(2),
+td:nth-child(2){
+  text-align:left;
+  padding-left:6px;
+  font-weight:600;
+  width: 120px;
+  min-width: 120px;
+  white-space:normal;
+  word-break:normal;
+  line-height:1.3;
+}
+#ledgerTable td:nth-child(5n){
+  font-weight:bold;
+}
+/* Roll Column */
+th:nth-child(1),
+td:nth-child(1){
+  width: 35px;
+  min-width:35px;
+}
+
+/* Final GPA */
+th:nth-last-child(3),
+td:nth-last-child(3){
+  width:40px;
+  min-width:40px;
+}
+
+/* Result */
+th:nth-last-child(2),
+td:nth-last-child(2){
+  width:70px;
+  min-width:70px;
+}
+
+/* Rank */
+th:last-child,
+td:last-child{
+  width:60px;
+  min-width:60px;
+}
+th[colspan]{
+  text-align:center;
+  font-size:10px;
+}
+
+th{
+  background:#0b3d91;
+  color:#fff;
+  border:3px solid #000;
+  font-weight:700;
+  white-space:normal;
+  font-size:9px;
+  line-height:1.2;
+}
+
+/* SIGNATURE */
+.sign-section{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin-top:70px;
+  padding:0 40px;
+}
+
+.signature-box{
+  width:20%;
+  text-align:center;
+  position:relative;
+}
+
+.sign-img{
+  height:100px;
+  display:block;
+  margin:0 auto 5px auto;
+}
+
+.sign-space{
+  height:60px; /* same height as signature image */
+}
+
+.sign-line{
+  border-top:2px solid #000;
+  margin-top:-25px;
+}
+
+.sign-title{
+  margin-top:6px;
+  font-weight:600;
+  font-size:16px;
+}
+
+
+/* ACTION BUTTON AREA */
+.action-buttons{
+  position:fixed;
+  bottom:25px;
+  right:30px;
+  /* display:none; */
+  gap:10px;
+  z-index:999;
+}
+
+.action-buttons button{
+  padding:10px 18px;
+  font-weight:600;
+  border-radius:30px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+#pdfLedgerBtn{
+  background:#198754;
+  border:none;
+}
+
+#pdfLedgerBtn:hover{
+  background:#157347;
+}
+
+#resetLedgerBtn{
+  background:#dc3545;
+  border:none;
+}
+
+#resetLedgerBtn:hover{
+  background:#bb2d3b;
+}
+  /* FAIL / NG Highlight */
+
+.fail-text {
+  color: #8B0000;   /* dark red */
+  font-weight: bold;
+}
+
+.fail-row {
+  background-color: #d9f2d9;  /* light green */
+}
+@media print {
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container-box" id="ledgerContainer">
+
+<img src="school_logo.png" class="watermark">
+<h6 class="watermark-text">Prepared By Ashish Paudel</h6>
+
+<div class="header-flex">
+  <img src="school_logo.png">
+  <div style="width:100%;">
+    <h2 style="margin:0;color:#0b3d91;">
+      Shree Tri-Shaheed Secondary School
+    </h2>
+    <h5 style="text-align:center;margin:0;">
+      FINAL EXAMINATION RESULT LEDGER
+    </h5>
+    <h6 style="text-align:center;" id="classTitle"></h6>
+  </div>
+</div>
+
+<table id="ledgerTable"></table>
+
+<br>
+<!-- FLOATING ACTION BUTTONS -->
+ 
+<div class="action-buttons">
+  <button id="pdfLedgerBtn" class="btn text-white">
+    ⬇ Download PDF
+  </button>
+
+  <button id="resetLedgerBtn" class="btn text-white">
+    🗑 Reset Class
+  </button>
+</div>
+
+
+<!-- SIGNATURE SECTION -->
+<div class="sign-section">
+
+  <div class="signature-box">
+    <img src="ashish_signature1.png" class="sign-img">
+    <div class="sign-line"></div>
+    <div class="sign-title">Prepared By</div>
+  </div>
+
+  <div class="signature-box">
+    <div class="sign-space"></div>
+    <div class="sign-line"></div>
+    <div class="sign-title">Class Teacher</div>
+  </div>
+
+  <div class="signature-box">
+    <div class="sign-space"></div>
+    <div class="sign-line"></div>
+    <div class="sign-title">Head Teacher</div>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+  // LOGIN CHECK
+if(localStorage.getItem("loggedIn") !== "true"){
+  window.location.href="login.html";
+}
+
+// FINAL TERM ACCESS CHECK
+if(localStorage.getItem("finalAccess") !== "true"){
+  window.location.href="dashboard.html";
+}
+function capitalizeWords(text){
+  return text.replace(/\b\w/g, function(char){
+    return char.toUpperCase();
+  });
+}
+
+/* CLASS TITLE */
+const selectedClass = (sessionStorage.getItem("selectedClass") || "").trim();
+document.getElementById("classTitle").innerHTML = "Class: " + selectedClass;
+
+const students = JSON.parse(localStorage.getItem("students") || "[]");
+
+let filtered = students.filter(st => 
+  (st.classname || "").trim() === selectedClass
+);
+
+filtered = removeDuplicateStudents(filtered);
+
+if(filtered.length === 0){
+  document.body.innerHTML = "<h3 style='text-align:center;margin-top:50px;'>No Data Found</h3>";
+  throw new Error("No data");
+}
+
+filtered.sort((a,b)=> Number(a.roll)-Number(b.roll));
+
+/* ===== GPA LOGIC ===== */
+
+function isPass(marks, full){
+  return marks >= (full * 0.32);
+}
+
+function getPointFromMarks(marks, full){
+
+  if(full == 100){
+    if(marks>=90) return 4.0;
+    if(marks>=80) return 3.6;
+    if(marks>=70) return 3.2;
+    if(marks>=60) return 2.8;
+    if(marks>=50) return 2.4;
+    if(marks>=40) return 2.0;
+    if(marks>=31.5) return 1.6;
+    return 0;
+  }
+
+  if(full == 75){
+    if(marks>=67.5) return 4.0;
+    if(marks>=60) return 3.6;
+    if(marks>=52.5) return 3.2;
+    if(marks>=45) return 2.8;
+    if(marks>=37.5) return 2.4;
+    if(marks>=30) return 2.0;
+    if(marks>=26.25) return 1.6;
+    return 0;
+  }
+
+  if(full == 50){
+    if(marks>=45) return 4.0;
+    if(marks>=40) return 3.6;
+    if(marks>=35) return 3.2;
+    if(marks>=30) return 2.8;
+    if(marks>=25) return 2.4;
+    if(marks>=20) return 2.0;
+    if(marks>=17.5) return 1.6;
+    return 0;
+  }
+
+  if(full == 25){
+    if(marks>=22.5) return 4.0;
+    if(marks>=20) return 3.6;
+    if(marks>=17.5) return 3.2;
+    if(marks>=15) return 2.8;
+    if(marks>=12.5) return 2.4;
+    if(marks>=10) return 2.0;
+    if(marks>=7.5) return 1.6;
+    return 0;
+  }
+
+  return 0;
+}
+
+function getLetterFromPoint(point){
+  if(point == 4.0) return "A+";
+  if(point == 3.6) return "A";
+  if(point == 3.2) return "B+";
+  if(point == 2.8) return "B";
+  if(point == 2.4) return "C+";
+  if(point == 2.0) return "C";
+  if(point == 1.6) return "D";
+  return "NG";
+}
+
+/* PROCESS STUDENTS */
+
+let processed = [];
+
+filtered.forEach(st => {
+
+  let totalWeightedPoints = 0;
+  let totalCredit = 0;
+  let overallFail = false;
+  let subjectsData = [];
+
+  st.subjects.forEach(sub => {
+
+    let passTh = isPass(sub.marksTheory, sub.fullTheory);
+    let passPr = isPass(sub.marksPractical, sub.fullPractical);
+
+    let thPoint = getPointFromMarks(sub.marksTheory, sub.fullTheory);
+    let prPoint = getPointFromMarks(sub.marksPractical, sub.fullPractical);
+
+    let subjectGPA = 0;
+    let finalLetter = "NG";
+
+    if(passTh && passPr){
+
+      subjectGPA = (
+        (thPoint * sub.creditTheory) +
+        (prPoint * sub.creditPractical)
+      ) / (sub.creditTheory + sub.creditPractical);
+
+      subjectGPA = Number(subjectGPA.toFixed(2));
+
+      finalLetter = getLetterFromPoint(
+        Math.max(...[4.0,3.6,3.2,2.8,2.4,2.0,1.6,0]
+        .filter(g => g <= subjectGPA))
+      );
+
+    }else{
+      overallFail = true;
+    }
+
+    if(finalLetter === "NG"){
+      overallFail = true;
+    }
+
+    totalWeightedPoints += subjectGPA * (sub.creditTheory + sub.creditPractical);
+    totalCredit += (sub.creditTheory + sub.creditPractical);
+
+subjectsData.push({
+  thPoint: thPoint,
+  prPoint: prPoint,
+  thLetter: getLetterFromPoint(thPoint),
+  prLetter: getLetterFromPoint(prPoint),
+  finalLetter,
+  subjectGPA
+});
+
+  });
+
+  let finalGPA = "NG";
+
+  if(!overallFail && totalCredit > 0){
+    finalGPA = (totalWeightedPoints / totalCredit).toFixed(2);
+  }
+
+  processed.push({
+    roll: st.roll,
+    name: capitalizeWords(st.name),
+    subjectsData,
+    finalGPA,
+    result: finalGPA === "NG" ? "FAIL" : "PASS"
+  });
+
+});
+
+/* ===== DENSE RANK ===== */
+
+let gpaList = processed
+  .filter(s => s.finalGPA !== "NG")
+  .map(s => parseFloat(s.finalGPA));
+
+let uniqueGPAs = [...new Set(gpaList)]
+  .sort((a,b)=> b - a);
+
+processed.forEach(s => {
+  if(s.finalGPA === "NG"){
+    s.rank = "-";
+  } else {
+    s.rank = uniqueGPAs.indexOf(parseFloat(s.finalGPA)) + 1;
+  }
+});
+
+/* ===== BUILD TABLE ===== */
+
+let table = document.getElementById("ledgerTable");
+let subjects = filtered[0].subjects;
+
+let header = "<tr><th rowspan='2'>Roll</th><th rowspan='2'>Name</th>";
+
+subjects.forEach(sub=>{
+  header += `<th colspan="5">${capitalizeWords(sub.name)}</th>`;
+});
+
+header += "<th rowspan='2'>Final GPA</th><th rowspan='2'>Result</th><th rowspan='2'>Rank</th></tr>";
+
+header += "<tr>";
+subjects.forEach(()=>{
+  header += "<th>TH GP</th><th>TH G</th><th>PR GP</th><th>PR G</th><th>Grade</th>";
+});
+header += "</tr>";
+
+table.innerHTML = header;
+processed.forEach(st => {
+
+  let isFail = (st.result === "FAIL");
+
+  let rowClass = isFail ? "fail-row" : "";
+  let resultClass = isFail ? "fail-text" : "";
+  let gpaClass = (st.finalGPA === "NG") ? "fail-text" : "";
+
+  let row = `<tr class="${rowClass}">
+      <td>${st.roll}</td>
+      <td>${st.name}</td>`;
+
+  // 🔥 SUBJECT LOOP (THIS WAS MISSING)
+
+  st.subjectsData.forEach(sub => {
+
+    let subjectClass = (sub.finalLetter === "NG") ? "fail-text" : "";
+
+row += `
+<td>${sub.thPoint === 0 ? "NG" : sub.thPoint.toFixed(1)}</td>
+<td>${sub.thLetter}</td>
+<td>${sub.prPoint === 0 ? "NG" : sub.prPoint.toFixed(1)}</td>
+<td>${sub.prLetter}</td>
+<td class="${subjectClass}">${sub.finalLetter}</td>
+`;
+  });
+
+  row += `
+      <td class="${gpaClass}">${st.finalGPA}</td>
+      <td class="${resultClass}">${st.result}</td>
+      <td>${st.rank}</td>
+    </tr>`;
+
+  table.innerHTML += row;
+});
+
+function removeDuplicateStudents(data) {
+  const uniqueMap = {};
+  data.forEach(student => {
+    const key = student.name.trim().toLowerCase() + "_" + student.roll.trim();
+    uniqueMap[key] = student;
+  });
+  return Object.values(uniqueMap);
+}
+
+/* PDF DOWNLOAD */
+
+document.getElementById("pdfLedgerBtn").addEventListener("click", function(){
+
+  const element = document.getElementById("ledgerContainer");
+
+  document.querySelector(".action-buttons").style.display = "none";
+
+  const opt = {
+    margin: [5,5,5,5],
+    filename: "Class_Ledger_"+selectedClass+".pdf",
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: { scale: 4, useCORS: true, scrollY: 0 },
+    jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' },
+    pagebreak: { mode: ['css'] }
+  };
+
+  html2pdf().set(opt).from(element).save().then(()=>{
+    document.querySelector(".action-buttons").style.display = "flex";
+  });
+
+});
+
+
+
+/* RESET CLASS DATA */
+
+document.getElementById("resetLedgerBtn").addEventListener("click", function(){
+
+  if(!confirm("Are you sure you want to reset this class data?")){
+    return;
+  }
+
+  if(!confirm("This action cannot be undone. Confirm again?")){
+    return;
+  }
+
+  localStorage.setItem("students_backup", localStorage.getItem("students"));
+
+  let students = JSON.parse(localStorage.getItem("students") || "[]");
+
+  let remaining = students.filter(st => st.classname !== selectedClass);
+
+  localStorage.setItem("students", JSON.stringify(remaining));
+
+  alert("Class data reset successfully.");
+  location.reload();
+
+});
+</script>
+
+</body>
+</html>

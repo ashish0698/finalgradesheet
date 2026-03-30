@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Final Examination Gradesheet Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+
+:root{
+  --dark-bg:#0f172a;
+  --light-bg:#f1f5f9;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 40px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(10px);
+}
+
+.logo-area{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.logo-area img{
+  width:50px;
+  height:50px;
+  object-fit:contain;
+}
+
+.school-title{
+  font-weight:600;
+  font-size:18px;
+}
+
+.toggle{
+  cursor:pointer;
+  font-size:20px;
+}
+
+.footer{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  text-align:center;
+  font-size:13px;
+  padding:8px 0;
+  background:rgba(0,0,0,0.2);
+  backdrop-filter:blur(5px);
+  opacity:0.8;
+}
+body.light{
+  background:var(--light-bg);
+  color:#111;
+}
+
+/* Light mode card */
+body.light .card{
+  background:white;
+  color:#111;
+}
+
+/* Light mode table */
+body.light thead th{
+  background:#2563eb;
+  color:black;
+}
+
+body.light tbody tr:hover{
+  background:#f1f5f9;
+}
+/* ================== OBTAINED MARKS DESIGN ================== */
+
+/* Obtained Marks (Theory) */
+.subMarksTheory {
+  background: linear-gradient(135deg, #ffe3e3, #ffb3b3);
+  font-weight: bold;
+  color: #b71c1c;
+  border: 2px solid #b71c1c !important;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Obtained Marks (Practical) */
+.subMarksPractical {
+  background: linear-gradient(135deg, #e3f7ff, #b3e0ff);
+  font-weight: bold;
+  color: #01579b;
+  border: 2px solid #01579b !important;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Hover Effects */
+.subMarksTheory:hover {
+  background: #ff8a80;
+  color: #fff;
+  transition: 0.3s;
+}
+
+.subMarksPractical:hover {
+  background: #4fc3f7;
+  color: #fff;
+  transition: 0.3s;
+}
+
+/* ================== GENERAL DESIGN ================== */
+
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:var(--dark-bg);
+  color:white;
+  min-height:100vh;
+  overflow-x:hidden;
+  transition:0.4s ease;
+  padding-bottom:50px;
+}
+
+.card{
+  border:none;
+  border-radius:20px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(15px);
+  box-shadow:0 15px 40px rgba(0,0,0,0.4);
+  min-height:85vh;
+  color:white;
+}
+
+.card-watermark{
+  position:absolute;
+  top:80%;
+  left:40%;
+  font-size:20px;
+  font-weight:800;
+  color:#1a4b8c;
+  opacity:0.06;
+  white-space:nowrap;
+  pointer-events:none;
+  user-select:none;
+  z-index:0;
+}
+
+#inputSection{
+  position:relative;
+  z-index:1;
+}
+
+h2{
+  font-weight:bold;
+  color:#1A4C14;
+}
+
+.form-label{
+  font-weight:600;
+}
+
+input{
+  border-radius:10px !important;
+}
+
+/* ================= TABLE BORDER BOLD ================= */
+
+#subjectTable th,
+#subjectTable td {
+  border: 2px solid #1a4b8c !important;
+}
+
+thead th{
+  background:#1a4b8c;
+  color:#fff;
+  text-align:center;
+}
+
+tbody tr:hover{
+  background:#f1f5ff;
+}
+
+.delete-btn{
+  background:#dc3545;
+  color:#fff;
+  border:none;
+  border-radius:50%;
+  width:34px;
+  height:34px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.delete-btn:hover{
+  background:#bb2d3b;
+}
+
+.btn-primary{
+  background:#1a4b8c;
+  border:none;
+  border-radius:10px;
+}
+
+.btn-success{
+  border-radius:10px;
+  font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+  <div class="topbar">
+  <div class="logo-area">
+    <img src="school_logo.png" alt="School Logo">
+    <div class="school-title">Trishaheed Secondary School</div>
+  </div>
+
+  <div class="toggle" onclick="toggleMode()" id="modeIcon">
+    <i class="fa fa-moon"></i>
+  </div>
+</div>
+<div class="container mt-3 mb-5">
+  <div class="card p-4 shadow-lg">  
+    <div class="card-watermark">Created By Ashish Paudel</div>
+    <h2 class="text-center mb-5">
+      Tri-Shaheed Secondary School<br>
+      <small class="text-muted fs-5">Student Final Examination Gradesheet Generator With Ledger</small>
+    </h2>
+
+    <div id="inputSection">
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Student Name</label>
+          <input type="text" id="studentName" class="form-control">
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Class</label>
+          <input type="text" id="studentClass" class="form-control">
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Roll No</label>
+          <input type="text" id="rollNo" class="form-control">
+        </div>
+
+      <h5 class="mt-3 mb-2 fw-bold">Enter Subjects</h5>
+
+      <table class="table align-middle" id="subjectTable">
+        <thead>
+          <tr>
+            <th>Subject Name</th>
+            <th>Full-Marks (Theory)</th>
+            <th>Credit-Hour (Theory)</th>
+            <th>Obtained-Marks (Theory)</th>
+            <th>Full-Marks (Practical)</th>
+            <th>Credit-Hour (Practical)</th>
+            <th>Obtained-Marks (Practical)</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="text" class="form-control subName"></td>
+            <td><input type="number" class="form-control subFullTheory"></td>
+            <td><input type="number" class="form-control subCreditTheory"></td>
+            <td><input type="number" class="form-control subMarksTheory"></td>
+            <td><input type="number" class="form-control subFullPractical"></td>
+            <td><input type="number" class="form-control subCreditPractical"></td>
+            <td><input type="number" class="form-control subMarksPractical"></td>
+            <td class="text-center">
+              <button class="delete-btn" onclick="deleteRow(this)">×</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button class="btn btn-primary w-100 mt-2" onclick="addRow()">
+        ➕ Add Another Subject
+      </button>
+
+      <button type="button" class="btn btn-success w-100 mt-2" onclick="generateMarksheet()">
+        📄 Generate Gradesheet
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // LOGIN CHECK
+if(localStorage.getItem("loggedIn") !== "true"){
+  window.location.href="login.html";
+}
+
+// FINAL TERM ACCESS CHECK
+if(localStorage.getItem("finalAccess") !== "true"){
+  window.location.href="dashboard.html";
+}
+function addRow() {
+  let row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input type="text" class="form-control subName"></td>
+    <td><input type="number" class="form-control subFullTheory"></td>
+    <td><input type="number" class="form-control subCreditTheory"></td>
+    <td><input type="number" class="form-control subMarksTheory"></td>
+    <td><input type="number" class="form-control subFullPractical"></td>
+    <td><input type="number" class="form-control subCreditPractical"></td>
+    <td><input type="number" class="form-control subMarksPractical"></td>
+    <td class="text-center">
+      <button class="delete-btn" onclick="deleteRow(this)">×</button>
+    </td>
+  `;
+  document.querySelector("#subjectTable tbody").appendChild(row);
+}
+
+function deleteRow(btn){
+  btn.closest("tr").remove();
+}
+
+function generateMarksheet() {
+
+  const name = studentName.value.trim();
+  const classname = studentClass.value.trim();
+  const roll = rollNo.value.trim();
+
+  if(!name || !classname || !roll){
+    alert("Please fill all student details.");
+    return;
+  }
+
+  const subNames = document.getElementsByClassName('subName');
+  const subMarksTheory = document.getElementsByClassName('subMarksTheory');
+  const subCreditTheory = document.getElementsByClassName('subCreditTheory');
+  const subFullTheory = document.getElementsByClassName('subFullTheory');
+  const subMarksPractical = document.getElementsByClassName('subMarksPractical');
+  const subCreditPractical = document.getElementsByClassName('subCreditPractical');
+  const subFullPractical = document.getElementsByClassName('subFullPractical');
+
+  const subjects = [];
+
+  for(let i=0;i<subNames.length;i++){
+
+    if(!subNames[i].value || !subMarksTheory[i].value){
+      alert("Please fill all subject fields.");
+      return;
+    }
+
+    subjects.push({
+      name: subNames[i].value,
+      marksTheory: Number(subMarksTheory[i].value),
+      creditTheory: Number(subCreditTheory[i].value),
+      fullTheory: Number(subFullTheory[i].value),
+      marksPractical: Number(subMarksPractical[i].value),
+      creditPractical: Number(subCreditPractical[i].value),
+      fullPractical: Number(subFullPractical[i].value)
+    });
+  }
+
+  // ===== CALCULATE FINAL GPA (SAME LOGIC AS BEFORE) =====
+
+  function isPass(marks, full){
+    return marks >= (full * 0.32);
+  }
+
+  function getPointFromMarks(marks, full){
+
+    if(full == 100){
+      if(marks>=90) return 4.0;
+      if(marks>=80) return 3.6;
+      if(marks>=70) return 3.2;
+      if(marks>=60) return 2.8;
+      if(marks>=50) return 2.4;
+      if(marks>=40) return 2.0;
+      if(marks>=31.5) return 1.6;
+      return 0;
+    }
+
+    if(full == 75){
+      if(marks>=67.5) return 4.0;
+      if(marks>=60) return 3.6;
+      if(marks>=52.5) return 3.2;
+      if(marks>=45) return 2.8;
+      if(marks>=37.5) return 2.4;
+      if(marks>=30) return 2.0;
+      if(marks>=26.25) return 1.6;
+      return 0;
+    }
+
+    if(full == 50){
+      if(marks>=45) return 4.0;
+      if(marks>=40) return 3.6;
+      if(marks>=35) return 3.2;
+      if(marks>=30) return 2.8;
+      if(marks>=25) return 2.4;
+      if(marks>=20) return 2.0;
+      if(marks>=17.5) return 1.6;
+      return 0;
+    }
+
+    if(full == 25){
+      if(marks>=22.5) return 4.0;
+      if(marks>=20) return 3.6;
+      if(marks>=17.5) return 3.2;
+      if(marks>=15) return 2.8;
+      if(marks>=12.5) return 2.4;
+      if(marks>=10) return 2.0;
+      if(marks>=7.5) return 1.6;
+      return 0;
+    }
+
+    return 0;
+  }
+
+  let totalWeightedPoints = 0;
+  let totalCredit = 0;
+  let overallFail = false;
+
+  subjects.forEach(sub=>{
+
+    let passTh = isPass(sub.marksTheory, sub.fullTheory);
+    let passPr = isPass(sub.marksPractical, sub.fullPractical);
+
+    if(!passTh || !passPr){
+      overallFail = true;
+    }
+
+    let thPoint = getPointFromMarks(sub.marksTheory, sub.fullTheory);
+    let prPoint = getPointFromMarks(sub.marksPractical, sub.fullPractical);
+
+    let subjectGPA = 0;
+
+    if(passTh && passPr){
+      subjectGPA = ((thPoint*sub.creditTheory)+(prPoint*sub.creditPractical)) /
+                   (sub.creditTheory+sub.creditPractical);
+    }
+
+    totalWeightedPoints += subjectGPA*(sub.creditTheory+sub.creditPractical);
+    totalCredit += (sub.creditTheory+sub.creditPractical);
+  });
+
+  let finalGPA = "NG";
+
+  if(!overallFail && totalCredit>0){
+    finalGPA = (totalWeightedPoints/totalCredit).toFixed(2);
+  }
+
+  let result = finalGPA === "NG" ? "FAIL" : "PASS";
+
+  const studentData = {
+    name,
+    classname,
+    roll,
+    subjects,
+    finalGPA,
+    result
+  };
+
+  // SESSION for marksheet
+  sessionStorage.setItem("marksheetData", JSON.stringify(studentData));
+
+  // LOCAL STORAGE (MASTER ARRAY)
+  let students = JSON.parse(localStorage.getItem("students") || "[]");
+  students.push(studentData);
+  localStorage.setItem("students", JSON.stringify(students));
+
+  window.open("marksheet.html","_blank");
+}
+
+// Toggle Theme
+function toggleMode(){
+  document.body.classList.toggle("light");
+
+  if(document.body.classList.contains("light")){
+    document.getElementById("modeIcon").innerHTML='<i class="fa fa-sun"></i>';
+    localStorage.setItem("theme","light");
+  }else{
+    document.getElementById("modeIcon").innerHTML='<i class="fa fa-moon"></i>';
+    localStorage.setItem("theme","dark");
+  }
+}
+
+// Load Saved Theme
+if(localStorage.getItem("theme")==="light"){
+  document.body.classList.add("light");
+  document.getElementById("modeIcon").innerHTML='<i class="fa fa-sun"></i>';
+}
+
+// Load Saved Theme
+if(localStorage.getItem("theme")==="light"){
+  document.body.classList.add("light");
+  document.getElementById("modeBtn").innerText="☀️ Light Mode";
+  document.getElementById("modeBtn").classList.remove("btn-outline-light");
+  document.getElementById("modeBtn").classList.add("btn-outline-dark");
+}
+
+</script>
+<div class="footer">
+  © 2026 (Ashish Paudel) Trishaheed Secondary School | Examination Management System
+</div>
+</body>
+</html>
