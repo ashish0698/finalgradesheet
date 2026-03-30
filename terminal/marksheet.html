@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Marksheet</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+body{
+  margin:0;
+  padding:0;
+  font-family: Arial, sans-serif;
+  background:#fff;
+}
+
+.marksheet-container{
+  width:190mm;
+  margin:0 auto;
+  border:3px solid #1a4b8c;
+  padding:8px;
+  background:#fff;
+  box-sizing:border-box;
+  font-weight:bold;
+  position:relative;
+}
+
+.watermark{
+  position:absolute;
+  top:45%;
+  left:50%;
+  width:400px;
+  opacity:0.08;
+  transform:translate(-50%,-50%);
+  z-index:0;
+}
+
+.watermarks{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:14px;
+  opacity:0.15;
+  z-index:0;
+}
+
+.header-flex{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin-bottom:10px;
+  position:relative;
+  z-index:1;
+}
+
+.header-flex img{
+  width:100px;
+}
+
+.header-title{
+  font-size:30px;
+  text-align:center;
+}
+
+.header-subtitle{
+  font-size:16px;
+  text-decoration:underline;
+  text-align:center;
+}
+
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  margin-top:10px;
+}
+
+table.main-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+  font-size:15px;
+}
+
+table.main-table th,
+table.main-table td{
+  border:2px solid black;
+  padding:5px;
+  text-align:center;
+}
+
+table.main-table th{
+  background:#e6eefc;
+}
+
+.grade-box{
+  margin-top:10px;
+  border:2px solid #1a4b8c;
+  padding:12px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.grade-section{
+  width:48%;
+}
+
+.grade-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+  text-align:center;
+}
+
+.grade-table td{
+  border:1px solid black;
+  padding:4px;
+}
+
+.gpa-block{
+  border:2px solid #1a4b8c;
+  width:120px;
+  padding:6px;
+  text-align:center;
+  margin-top:5px;
+  margin-left:auto;
+}
+
+.sign-section{
+  display:flex;
+  justify-content:space-between;
+  margin-top:15px;
+}
+
+.sign-box{
+  width:45%;
+  text-align:center;
+}
+
+.sign-line{
+  border-top:1px solid black;
+  margin-top:30px;
+}
+
+#pdfBtn{
+  margin-top:12px;
+  width:220px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="marksheet" class="marksheet-container">
+
+<img src="school_logo.png" class="watermark">
+<h6 class="watermarks">Created By Ashish Paudel</h6>
+
+<div class="header-flex">
+  <img src="school_logo.png">
+  <div>
+    <div class="header-title">Shree Tri-Shaheed Secondary School</div>
+    <div style="font-size:18px;text-align:center;">Aandikhola-1, Syangja</div>
+    <div class="header-subtitle">TERMINAL EXAMINATION GRADE-SHEET</div>
+  </div>
+</div>
+
+<div class="info-row" id="studentInfo"></div>
+
+<table class="main-table" id="marksTable">
+<tr>
+  <th>S.N</th>
+  <th style="text-align:left;">Subject</th>
+  <th>Full Marks</th>
+  <th>Credit Hour</th>
+  <th>Grade</th>
+  <th>Grade Point</th>
+</tr>
+</table>
+
+<div class="gpa-block" id="gpaBlock">GPA: 0.00</div>
+
+<div class="grade-box">
+  <div class="grade-section">
+    <h5 class="text-center" style="font-size:13px; font-weight: bold;">Grade For Full Marks - 75</h5>
+    <table class="grade-table">
+      <tr><td>67.5 TO BELOW 75</td><td>A+</td><td>OUTSTANDING</td></tr>
+      <tr><td>60 TO BELOW 67.5</td><td>A</td><td>EXCELLENT</td></tr>
+      <tr><td>52.5 TO BELOW 60</td><td>B+</td><td>VERY-GOOD</td></tr>
+      <tr><td>45 TO BELOW 52.5</td><td>B</td><td>GOOD</td></tr>
+      <tr><td>37.5 TO BELOW 45</td><td>C+</td><td>SATISFACTORY</td></tr>
+      <tr><td>30 TO BELOW 37.5</td><td>C</td><td>ACCEPTABLE</td></tr>
+      <tr><td>26.25 TO BELOW 30</td><td>D</td><td>BASIC</td></tr>
+      <tr><td>Below 26.25</td><td>NG</td><td>NON-GRADED</td></tr>
+    </table>
+  </div>
+
+  <div class="grade-section">
+    <h5 class="text-center" style="font-size:13px; font-weight: bold;">Grade For Full Marks - 50</h5>
+    <table class="grade-table">
+      <tr><td>45 TO BELOW 50</td><td>A+</td><td>OUTSTANDING</td></tr>
+      <tr><td>40 TO BELOW 45</td><td>A</td><td>EXCELLENT</td></tr>
+      <tr><td>35 TO BELOW 40</td><td>B+</td><td>VERY-GOOD</td></tr>
+      <tr><td>30 TO BELOW 35</td><td>B</td><td>GOOD</td></tr>
+      <tr><td>25 TO BELOW 30</td><td>C+</td><td>SATISFACTORY</td></tr>
+      <tr><td>20 TO BELOW 25</td><td>C</td><td>ACCEPTABLE</td></tr>
+      <tr><td>17.5 TO BELOW 20</td><td>D</td><td>BASIC</td></tr>
+      <tr><td>Below 17.5</td><td>NG</td><td>NON-GRADED</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="sign-section">
+  <div class="sign-box">
+    <div class="sign-line"></div>
+    Class-Teacher
+  </div>
+  <div class="sign-box">
+    <div class="sign-line"></div>
+    Head-Teacher
+  </div>
+</div>
+
+<center>
+<button id="pdfBtn" class="btn btn-success">Download PDF</button>
+</center>
+
+</div>
+
+<script>
+function calculateGrade(marks, full){
+  marks=Number(marks);
+  full=Number(full);
+
+  if(full==75){
+    if(marks>=67.5) return "A+";
+    if(marks>=60) return "A";
+    if(marks>=52.5) return "B+";
+    if(marks>=45) return "B";
+    if(marks>=37.5) return "C+";
+    if(marks>=30) return "C";
+    if(marks>=26.25) return "D";
+    return "NG";
+  }
+
+  if(full==50){
+    if(marks>=45) return "A+";
+    if(marks>=40) return "A";
+    if(marks>=35) return "B+";
+    if(marks>=30) return "B";
+    if(marks>=25) return "C+";
+    if(marks>=20) return "C";
+    if(marks>=17.5) return "D";
+    return "NG";
+  }
+
+  return "NG";
+}
+
+function calculateGP(marks, full){
+  if(full==75){
+    if(marks>=67.5) return 4;
+    if(marks>=60) return 3.6;
+    if(marks>=52.5) return 3.2;
+    if(marks>=45) return 2.8;
+    if(marks>=37.5) return 2.4;
+    if(marks>=30) return 2.0;
+    if(marks>=26.25) return 1.6;
+    return 0;
+  }
+
+  if(full==50){
+    if(marks>=45) return 4;
+    if(marks>=40) return 3.6;
+    if(marks>=35) return 3.2;
+    if(marks>=30) return 2.8;
+    if(marks>=25) return 2.4;
+    if(marks>=20) return 2.0;
+    if(marks>=17.5) return 1.6;
+    return 0;
+  }
+
+  return 0;
+}
+
+const data=JSON.parse(sessionStorage.getItem("marksheetData")||"{}");
+
+// Update the terminal text in header
+if(data.terminal){
+  document.querySelector('.header-subtitle').innerText = data.terminal + " TERMINAL GRADE-SHEET";
+}
+
+if(data.name){
+  document.getElementById("studentInfo").innerHTML=`
+    <p>Name: ${data.name}</p>
+    <p>Class: ${data.classname}</p>
+    <p>Roll: ${data.roll}</p>
+  `;
+
+  let table=document.getElementById("marksTable");
+  let totalC=0,sum=0,sn=1,fail=false;
+
+  data.subjects.forEach(s=>{
+    let gp=calculateGP(s.marks,s.full);
+    let grade=calculateGrade(s.marks,s.full);
+    if(gp===0) fail=true;
+
+    sum+=gp*Number(s.credit);
+    totalC+=Number(s.credit);
+
+    table.innerHTML+=`
+    <tr>
+      <td>${sn++}</td>
+      <td style="text-align:left;">${s.name}</td>
+      <td>${s.full}</td>
+      <td>${s.credit}</td>
+      <td>${grade}</td>
+      <td>${gp.toFixed(1)}</td>
+    </tr>`;
+  });
+
+  document.getElementById("gpaBlock").innerText=
+    "GPA: "+(fail?"0.00":(sum/totalC).toFixed(2));
+}
+
+document.getElementById("pdfBtn").onclick=()=>{
+  const element=document.getElementById("marksheet");
+
+  html2pdf().set({
+    margin:[3,0,2,0],
+    filename:`${data.name||"marksheet"}.pdf`,
+    html2canvas:{scale:3,scrollY:0,useCORS:true},
+    jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}
+  }).from(element).save();
+};
+</script>
+
+</body>
+</html>
