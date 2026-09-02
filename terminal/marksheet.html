@@ -311,12 +311,12 @@ const data=JSON.parse(sessionStorage.getItem("marksheetData")||"{}");
 
 // Update the terminal text in header
 if(data.terminal){
-  document.querySelector('.header-subtitle').innerText = data.terminal + " TERMINAL GRADE-SHEET 2083";
+  document.querySelector('.header-subtitle').innerText = data.terminal.toUpperCase() + " TERMINAL GRADE-SHEET 2083";
 }
 
 if(data.name){
   document.getElementById("studentInfo").innerHTML=`
-    <p>Name: ${data.name}</p>
+    <p>Name: ${data.name.toUpperCase()}</p>
     <p>Class: ${data.classname}</p>
     <p>Roll: ${data.roll}</p>
   `;
@@ -335,7 +335,7 @@ if(data.name){
     table.innerHTML+=`
     <tr>
       <td>${sn++}</td>
-      <td style="text-align:left;">${s.name}</td>
+      <td style="text-align:left;">${s.name.toUpperCase()}</td>
       <td>${s.full}</td>
       <td>${s.credit}</td>
       <td>${grade}</td>
